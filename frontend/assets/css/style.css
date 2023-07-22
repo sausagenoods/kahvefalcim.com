@@ -1,0 +1,5 @@
+.logo {margin-top: 2rem;}
+.logo * {display: inline;}
+.logo i {margin-right: 2rem; color: pink;}
+.links * {display: inline;}
+.links .right {float:right;}

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="tr-TR">
+  <head>
+    <meta charset="utf-8" />
+    <title>My Tasseography</title>
+    <meta name="description" content="Upload your picture and get your fortune telling from a special tasseography AI (artifical intelligence) model.">
+    <link rel="stylesheet" href="/assets/css/sakura.css" media="screen" />
+    <link rel="stylesheet" href="/assets/css/style.css" />
+    <link rel="stylesheet" href="/assets/css/sakura-vader.css" media="screen and (prefers-color-scheme: dark)" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css" integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  </head>
+  <body>
+    <div class="topbar">
+    <div class="logo">
+      <i class="fa fa-coffee fa-2x" aria-hidden="true"></i><h1>My Tasseography</h1>
+    </div>
+    <div class="links">
+      <div class="left">
+        <p><a href="/en">Try!</a> | <a href="/en/about.html">About</a> | <a href="/en/about_api.html">API</a></p>
+      </div>
+      <div class="right">
+	      <p><a href="/">TR</a> | <a href="/en">EN</a></p>
+      </div>
+    </div>
+    </div>
+    <br>
+  <p>Upload your picture and get your fortune telling from a special tasseography AI (artifical intelligence) model.</p>
+
+  <input type="file" id="fileField" accept=".jpg, .jpeg, .png" name="file">
+  <button onclick="falbak()">Upload</button>
+  <div id="result">
+  </div>
+  <h3>How does it work?</h3>
+  <ol>
+    <li>At first, a general use model checks whether if your picture contains a cup.</li>
+    <li>Then, coffee grounds are separated from the background.</li>
+    <li>At last, a special model is ran on the coffee ground patterns.</li>
+  </ol>
+  <img src="/assets/img/example-en.jpg">
+  <footer>
+    <p>A <a href="https://digilol.net">Digilol</a> website.</p>
+  </footer>
+  </body>
+  <script src="assets/js/script.js"></script>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="tr-TR">
+  <head>
+    <meta charset="utf-8" />
+    <title>Kahve Falcım</title>
+    <meta name="description" content="Fotoğrafını yükle, sanal zeka ve makine öğrenimi yardımıyla kahve falına baktır.">
+    <link rel="stylesheet" href="assets/css/sakura.css" media="screen" />
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="assets/css/sakura-vader.css" media="screen and (prefers-color-scheme: dark)" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css" integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  </head>
+  <body>
+    <div class="topbar">
+    <div class="logo">
+      <i class="fa fa-coffee fa-2x" aria-hidden="true"></i><h1>Kahve Falcım</h1>
+    </div>
+    <div class="links">
+      <div class="left">
+        <p><a href="/">Dene!</a> | <a href="/hakkinda">Hakkında</a> | <a href="/api_hakkinda">API</a></p>
+      </div>
+      <div class="right">
+	      <p><a href="/">TR</a> | <a href="/en">EN</a></p>
+      </div>
+    </div>
+    </div>
+    <br>
+  <p>Fotoğrafını yükle, sanal zeka ve makine öğrenimi yardımıyla falına baktır.</p>
+
+  <input type="file" id="fileField" accept=".jpg, .jpeg, .png" name="file">
+  <button onclick="falbak()">Yükle</button>
+  <div id="result">
+  </div>
+  <h3>Nasıl Çalışır?</h3>
+  <ol>
+    <li>Önce resimde kupa veya fincan var mı bakılır. Diğer uygulamaların aksine sanal zeka kül tablasına göre fal bakmaz.
+
+    <li>Daha sonra kahve izleri ayrıştırılır.</li>
+    <li>Son olarak özel bir nesne algılama modeli çalıştırılır.</li>
+  </ol>
+  <img src="assets/img/example-tr.jpg">
+  <footer>
+    <p>Bir <a href="https://digilol.net/tr">Digilol</a> sitesi.</p>
+  </footer>
+  </body>
+  <script src="assets/js/script.js"></script>
+</html>
