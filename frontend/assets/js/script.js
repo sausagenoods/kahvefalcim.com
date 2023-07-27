@@ -1,4 +1,4 @@
-function falbak() {
+function falbak(lang) {
 	cupImg = document.getElementById("fileField").files[0];
 	var reader = new FileReader();
 	var tempImg = document.createElement("img");
@@ -16,25 +16,40 @@ function falbak() {
 	formdata.append('file', cupImg);
 
 	var xhr = new XMLHttpRequest();
-	xhr.open('POST', 'http://127.0.0.1:5000/fal');
+	xhr.open('POST', 'https://kahvefalcim.com/api/fal/' + lang);
+	err = false
 	xhr.onreadystatechange = function(){
 	if (xhr.readyState != 4) return;
 		if (xhr.status != 200) {
   			alert("Status: " + xhr.status);
 		} else {
 			var jsonResp = JSON.parse(xhr.responseText)
-			var dataUrl = imgResult(tempImg, jsonResp)
-			document.getElementById("result").innerHTML = /*'<p>' + xhr.responseText + '</p>' +*/ '<img src="' + dataUrl + '">'
+			if (jsonResp.hasOwnProperty("error_msg")) {
+				if (lang == "en") {
+					document.getElementById("result").
+						innerHTML = '<p>Something went wrong! Try again later.</p>'
+				}
+				else {
+					document.getElementById("result").
+						innerHTML = '<p>Bir şeyler yanlış gitti! Daha sonra tekrar deneyin.</p>'
+				}
+				err = true
+			}
+			if (!err) {
+				var dataUrl = imgResult(tempImg, jsonResp)
+				var list = makelist(jsonResp.defs)
+				document.getElementById("result").innerHTML = '<img src="' + dataUrl + '">' + list
+			}
 		}
 	};
 
-	document.getElementById("result").innerHTML = '<p>Loading...</p>'
+	if (lang == "en") {
+		document.getElementById("result").innerHTML = '<p>Loading...</p>'
+	}
+	else {
+		document.getElementById("result").innerHTML = '<p>Yükleniyor...</p>'
+	}
 	xhr.send(formdata);
-}
-
-// Big thanks to etham https://stackoverflow.com/a/42769683
-function convertRemToPixels(rem) {
-    return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
 }
 
 function imgResult(img, res) {
@@ -71,12 +86,18 @@ function imgResult(img, res) {
 		
 		ctx.fillStyle = "#eb99a1";
 		ctx.strokeText(anno.obj, anno.pos[0], anno.pos[1] - 7);
-		//pxVal = convertRemToPixels(1.8)
-		//ctx.font='bold ' + pxVal + 'px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif'
 		ctx.fillText(anno.obj, anno.pos[0], anno.pos[1] - 7);
 		ctx.stroke();
-
-
 	}
 	return imgCanvas.toDataURL("image/png");
+}
+
+function makelist(defs) {
+	list = "<ul>"
+	console.log(defs)
+	for (i = 0; i < defs.length; i++) {
+		list += "<li><b>" + defs[i].name + ":</b> " + defs[i].meaning + "</li>"
+	}
+	list += "</ul>"
+	return list
 }
