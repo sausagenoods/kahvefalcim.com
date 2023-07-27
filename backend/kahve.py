@@ -6,13 +6,10 @@ from torchvision.models.detection import fasterrcnn_resnet50_fpn_v2, fasterrcnn_
 from torchvision.transforms.functional import to_pil_image, pil_to_tensor, crop
 
 import cup_img as ci
-
-CLASSES = [
-    'background', 'volcano', 'tree', 'skeleton', 'bird', 'person', 'river', 'eye', 'dragon', 'baby', 'fire', 'mountain', 'rose', 'flower', 'penis', 'bear', 'gun', 'bear', 'kangaroo', 'woman', 'tower', 'fox', 'lizard'
-]
+from classes import num_classes, CLASSES
 
 class Kahvefali:
-    def __init__(self, model_num_classes, model_path, detection_threshold, label_whitelist):
+    def __init__(self, n_classes, model_path, detection_threshold, label_whitelist):
         self.device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
         
         # Specialized model for tasseography.
@@ -21,7 +18,7 @@ class Kahvefali:
         # get the number of input features
         in_features = self.model.roi_heads.box_predictor.cls_score.in_features
         # define a new head for the detector with required number of classes
-        self.model.roi_heads.box_predictor = faster_rcnn.FastRCNNPredictor(in_features, model_num_classes)
+        self.model.roi_heads.box_predictor = faster_rcnn.FastRCNNPredictor(in_features, n_classes)
 
         self.model.to(self.device).load_state_dict(torch.load(
             model_path, map_location=self.device
