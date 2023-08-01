@@ -13,25 +13,27 @@ class Kahvefali:
         self.device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
         
         # Specialized model for tasseography.
-        self.model = fasterrcnn_resnet50_fpn(pretrained=True)
+        self.tas_model = fasterrcnn_resnet50_fpn(pretrained=True)
 
         # get the number of input features
-        in_features = self.model.roi_heads.box_predictor.cls_score.in_features
+        in_features = self.tas_model.roi_heads.box_predictor.cls_score.in_features
         # define a new head for the detector with required number of classes
-        self.model.roi_heads.box_predictor = faster_rcnn.FastRCNNPredictor(in_features, n_classes)
+        self.tas_model.roi_heads.box_predictor = faster_rcnn.FastRCNNPredictor(in_features, n_classes)
 
-        self.model.to(self.device).load_state_dict(torch.load(
+        self.tas_model.to(self.device).load_state_dict(torch.load(
             model_path, map_location=self.device
         ))
-        self.model.eval()
+        self.tas_model.eval()
+        self.tas_model.share_memory()
 
         # Generic model for object detection. Used to locate the cup.
         self.rcnn_weights = FasterRCNN_ResNet50_FPN_V2_Weights.DEFAULT
-        self.detection_model = fasterrcnn_resnet50_fpn_v2(
+        self.gen_model = fasterrcnn_resnet50_fpn_v2(
                 weights=self.rcnn_weights,
                 score_thresh=detection_threshold
         )
-        self.detection_model.eval()
+        self.gen_model.eval()
+        self.gen_model.share_memory()
         self.rcnn_preprocess = self.rcnn_weights.transforms()
         self.label_whitelist = label_whitelist
         self.detection_threshold = detection_threshold
@@ -40,7 +42,7 @@ class Kahvefali:
 
     def get_cup(self, img):
         batch = [self.rcnn_preprocess(img)]
-        prediction = self.detection_model(batch)[0]
+        prediction = self.gen_model(batch)[0]
 
         cup_boundary_box = None
         for idx, label_idx in enumerate(prediction["labels"]):
@@ -51,7 +53,7 @@ class Kahvefali:
                 cup_boundary_box = cup_boundary_box.unsqueeze(0)
                 return cup_boundary_box
 
-        raise ValueError("No cup detected in image")
+        raise NotCupError
 
 
     def detect_obj_inside_cup(self, image, orig):
@@ -61,13 +63,13 @@ class Kahvefali:
         image = torch.tensor(image, dtype=torch.float)
         image = torch.unsqueeze(image, 0)
         with torch.no_grad():
-            outputs = self.model(image)
+            outputs = self.tas_model(image)
 
         # load all detection to device for further operations
         outputs = [{k: v.to(self.device) for k, v in t.items()} for t in outputs]
         
         if len(outputs[0]['boxes']) == 0:
-            raise ValueError("Nothing predicted!")
+            raise NothingPredictedError
 
         boxes = outputs[0]['boxes'].data.numpy()
         scores = outputs[0]['scores'].data.numpy()
@@ -103,3 +105,11 @@ class Kahvefali:
         orig_cropped = image[bounds[0][1]:bounds[0][3], bounds[0][0]:bounds[0][2]]
         annotations = self.detect_obj_inside_cup(insides.astype(float), orig_cropped)
         return {"cup_boundaries": [int(bounds[0][0]), int(bounds[0][1]), int(bounds[0][2]), int(bounds[0][3])], "annotations": annotations}
+
+
+class NotCupError(Exception):
+    pass
+
+
+class NothingPredictedError(Exception):
+    pass
