@@ -1,6 +1,6 @@
 __pycache__/
-*.png
-*.jpg
+backend/*.png
+backend/*.jpg
 dataset/
 outputs/
 outputs-bak/
