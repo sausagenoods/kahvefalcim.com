@@ -68,13 +68,12 @@ class Kahvefali:
         # load all detection to device for further operations
         outputs = [{k: v.to(self.device) for k, v in t.items()} for t in outputs]
         
-        if len(outputs[0]['boxes']) == 0:
-            raise NothingPredictedError
-
         boxes = outputs[0]['boxes'].data.numpy()
         scores = outputs[0]['scores'].data.numpy()
         # filter out boxes according to `detection_threshold`
         boxes = boxes[scores >= self.detection_threshold].astype(np.int32)
+        if len(boxes) == 0:
+            raise NothingPredictedError
         draw_boxes = boxes.copy()
         # get all the predicited class names
         pred_classes = [CLASSES[i] for i in outputs[0]['labels'].cpu().numpy()]

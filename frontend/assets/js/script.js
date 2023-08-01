@@ -28,12 +28,12 @@ function falbak(lang) {
 				if (lang == "en") {
 					document.getElementById("result").
 						innerHTML = '<p>Something went wrong! Try again later.</p>' +
-							'<p><b>Error:</b>' + jsonResp.error_msg + '</p>'
+							'<p><b>Error: </b>' + jsonResp.error_msg + '</p>'
 				}
 				else {
 					document.getElementById("result").
 						innerHTML = '<p>Bir şeyler yanlış gitti! Daha sonra tekrar deneyin.</p>' +
-							'<p><b>Hata:</b>' + jsonResp.error_msg + '</p>'
+							'<p><b>Hata: </b>' + jsonResp.error_msg + '</p>'
 				}
 				err = true
 			}
